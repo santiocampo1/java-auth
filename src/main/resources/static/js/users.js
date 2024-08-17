@@ -21,12 +21,13 @@ const uploadUsers = async () => {
 
   for (let user of users) {
     let deleteButton = '<a href="#" onClick="deleteUser(' + user.id + ')" class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash"></i></a>';
+    let phoneTxt = user.phone ? user.phone : '-';
 
     let userHtml = '<tr><td>'
       + user.id + '</td><td>'
       + user.name + '</td><td>'
       + user.email + '</td><td>'
-      + user.phone + '</td><td>'
+      + phoneTxt + '</td><td>'
       + deleteButton + '</td></tr>';
 
     listHtml += userHtml;
