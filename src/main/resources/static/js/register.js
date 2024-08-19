@@ -30,8 +30,4 @@ const registerUser = async () => {
         },
         body: JSON.stringify(data)
     });
-
-    const users = await request.json();
-
-
 }
