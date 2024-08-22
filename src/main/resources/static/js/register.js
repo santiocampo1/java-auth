@@ -30,4 +30,6 @@ const registerUser = async () => {
         },
         body: JSON.stringify(data)
     });
+    alert("User was created successfully");
+    window.location.href = 'users.html'
 }
