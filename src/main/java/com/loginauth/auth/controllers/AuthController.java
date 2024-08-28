@@ -1,5 +1,7 @@
 package com.loginauth.auth.controllers;
 
+import com.loginauth.auth.utils.JWTUtil;
+
 import com.loginauth.auth.dao.UserDao;
 import com.loginauth.auth.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +16,17 @@ public class AuthController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @RequestMapping(value = "api/login", method = RequestMethod.POST)
     public String loginUser(@RequestBody User user) {
-        if (userDao.verifyCredentials(user)) {
-            return "OK";
+        User loguedUser = userDao.getUserByCredentials(user);
+
+        if (loguedUser != null) {
+
+            String tokenJwt = jwtUtil.create(String.valueOf(loguedUser.getId()), loguedUser.getEmail());
+            return tokenJwt;
         }
         return "FAIL";
     }
