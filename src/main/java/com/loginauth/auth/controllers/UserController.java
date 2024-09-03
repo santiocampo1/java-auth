@@ -2,6 +2,7 @@ package com.loginauth.auth.controllers;
 
 import com.loginauth.auth.dao.UserDao;
 import com.loginauth.auth.models.User;
+import com.loginauth.auth.utils.JWTUtil;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,9 @@ public class UserController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private JWTUtil jwtUtil;
+
     @RequestMapping(value = "api/users/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long id) {
         User user = new User();
@@ -26,9 +30,19 @@ public class UserController {
         return user;
     }
 
+
     @RequestMapping(value = "api/users", method = RequestMethod.GET)
-    public List<User> getUsers() {
+    public List<User> getUsers(@RequestHeader(value = "Authorization") String token) {
+        if (!validateToke(token)) {
+            return null;
+        }
+
         return userDao.getUsers();
+    }
+
+    private boolean validateToke(String token) {
+        String userId = jwtUtil.getKey(token);
+        return userId != null;
     }
 
     @RequestMapping(value = "api/users", method = RequestMethod.POST)
@@ -53,17 +67,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "api/users/{id}", method = RequestMethod.DELETE)
-    public void deleteUser(@PathVariable Long id) {
+    public void deleteUser(@RequestHeader(value = "Authorization") String token, @PathVariable Long id) {
+        if (!validateToke(token)) {
+            return;
+        }
         userDao.delete(id);
-    }
-
-    @RequestMapping(value = "user1")
-    public User searchUser() {
-        User user = new User();
-        user.setName("Santiago");
-        user.setLastName("Ocampo");
-        user.setEmail("sanntiocampo@gmail.com");
-        user.setPhone("3498408557");
-        return user;
     }
 }

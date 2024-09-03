@@ -2,17 +2,19 @@
 $(document).ready(function () {
   uploadUsers();
   $('#users').DataTable();
+  updateUserEmail();
 });
+
+const updateUserEmail = () => {
+  document.getElementById('txt-email-user').outerHTML = localStorage.email;
+}
 
 
 // GET all users.
 const uploadUsers = async () => {
   const request = await fetch('api/users', {
     method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getHeaders(),
   });
 
   const users = await request.json();
@@ -36,6 +38,15 @@ const uploadUsers = async () => {
   document.querySelector('#users tbody').outerHTML = listHtml;
 }
 
+const getHeaders = () => {
+  return {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization': localStorage.token,
+  }
+}
+
+
 // DELETE user by ID.
 const deleteUser = async (id) => {
 
@@ -45,10 +56,7 @@ const deleteUser = async (id) => {
 
   const request = await fetch('api/users/' + id, {
     method: 'DELETE',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
+    headers: getHeaders(),
   });
 
   location.reload();
