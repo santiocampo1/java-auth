@@ -22,7 +22,9 @@ const login = async () => {
 
     const response = await request.text();
 
-    if (response == 'OK') {
+    if (response != 'FAIL') {
+        localStorage.token = response;
+        localStorage.email = data.email;
         window.location.href = 'users.html'
     } else {
         alert("Credentials are not valid. Please try again.");
